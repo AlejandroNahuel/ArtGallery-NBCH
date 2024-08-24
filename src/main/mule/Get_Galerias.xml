@@ -31,7 +31,7 @@ output application/json
 	"query" : 'gallerie_id%30D' ++ payload.idGaleria as String
 }]]]></http:query-params>
 			</http:request>
-			<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;(payload filterObject((v, k) -&gt; matches(k, "data"))).data]' doc:name="Filtrar data" doc:id="4cf8f18f-9771-4d32-9cfb-a10896c7400f" variableName="data"/>
+			<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;//Filtramos el array data&#10;((payload filterObject((v, k) -&gt; matches(k, "data"))).data)&#10;//Filtramos los campos id y title&#10;map((item) -&gt; {&#10;	"idObraArte": item.id,&#10;	"nombreObraArte": item.title&#10;})]' doc:name="Filtrar data" doc:id="4cf8f18f-9771-4d32-9cfb-a10896c7400f" variableName="data"/>
 			<set-variable value='#[vars.Response_Payload + (vars.galeria ++ {"obrasArte": vars.data})]' doc:name="Response Payload" doc:id="21583c4c-b612-49f8-a3de-bac30736e326" variableName="Response_Payload"/>
 		</foreach>
 		<ee:transform doc:name="Transform Message" doc:id="bc1d66ca-e3da-4138-967b-4074b9f54049" >
