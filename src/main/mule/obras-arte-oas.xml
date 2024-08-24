@@ -136,12 +136,7 @@ output application/json
         <logger level="INFO" message="get:\galerias\(idGaleria)\obras:obras-arte-oas-config" />
     </flow>
     <flow name="get:\galerias\(idGaleria):obras-arte-oas-config">
-        <ee:transform doc:name="Transform Message">
-            <ee:variables>
-                <ee:set-variable variableName="idGaleria">attributes.uriParams.'idGaleria'</ee:set-variable>
-            </ee:variables>
-        </ee:transform>
-        <logger level="INFO" message="get:\galerias\(idGaleria):obras-arte-oas-config" />
+		<flow-ref doc:name="Galerias by Id Flow" doc:id="e98c7cb8-6e90-4346-abe2-c270811c8352" name="Get_Galerias_By_IdFlow"/>
     </flow>
     <flow name="get:\galerias\(idGaleria)\obras\(idObra):obras-arte-oas-config">
         <ee:transform doc:name="Transform Message">

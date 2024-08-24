@@ -1,0 +1,23 @@
+%dw 2.0
+
+type auto_d2c465ce_8b41_4574_acb2_dcda6a07cdae_Input_Attributes = {|
+  clientCertificate?: {|
+    publicKey?: {|  |}, 
+    "type"?: String, 
+    encoded?: Binary
+  |}, 
+  headers: {|  |}, 
+  listenerPath: String, 
+  method: String, 
+  queryParams: {|  |}, 
+  queryString: String, 
+  relativePath: String, 
+  remoteAddress: String, 
+  requestPath: String, 
+  requestUri: String, 
+  scheme: String, 
+  uriParams: {| idGaleria: Number |}, 
+  version: String, 
+  localAddress: String
+|}
+

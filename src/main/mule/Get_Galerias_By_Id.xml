@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="Get_Galerias_By_IdFlow" doc:id="d2c465ce-8b41-4574-acb2-dcda6a07cdae" >
+		<http:request method="GET" doc:name="Get Galerias by Id" doc:id="31c3b65a-2636-4b0b-aea0-51858848cc6e" config-ref="Obras_Arte_Request" path="#[p(&quot;path.galerias&quot;) ++ '/' ++ attributes.uriParams.idGaleria]" sendBodyMode="NEVER">
+		</http:request>
+		<set-variable value='#[%dw 2.0&#10;output application/json&#10;&#10;fun dateFormat(item) = (item as DateTime) as String {format: "dd-MMMM-uuuu, HH:mm:ss a"}&#10;---&#10;{&#10;	"idGaleria": payload.data.id,&#10;	"nombreGaleria": payload.data.title,&#10;	"fechaAlta": dateFormat(payload.data.timestamp)&#10;}]' doc:name="Galeria" doc:id="193d29ad-30cb-46dc-8c7c-5b7bb56f4fcf" variableName="galeria"/>
+		<http:request method="GET" doc:name="Request" doc:id="f9ad3609-9cc9-4480-8af8-15aa57d3475b" config-ref="Obras_Arte_Request" path="${path.obras}" sendBodyMode="NEVER">
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	"query" : "gallery_id%3D" ++ vars.galeria.idGaleria
+}]]]></http:query-params>
+		</http:request>
+		<ee:transform doc:name="Transform Message" doc:id="4437825b-cafc-4d9f-9142-3d0cb36c5a1b" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+vars.galeria ++ {"obrasArte": payload.data map((item)->{
+	"idObraArte": item.id,
+	"nombreObraArte": item.title
+})}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
