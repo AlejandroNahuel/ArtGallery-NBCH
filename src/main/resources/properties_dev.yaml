@@ -1,3 +1,7 @@
-path:
-  galerias: "galleries"
-  obras: "artworks/search"
+galerias_arte:
+  host: "api.artic.edu"
+  base_path: "/api/v1/"
+  path:
+    galerias: "galleries"
+    obras: "artworks/search"
+  galerias_query: "gallery_id%3D"

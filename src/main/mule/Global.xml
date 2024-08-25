@@ -4,8 +4,8 @@
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
-	<http:request-config name="Obras_Arte_Request" doc:name="HTTP Request configuration" doc:id="26fdb4c0-4c74-4af1-8768-f7572789da20" basePath="/api/v1/" >
-		<http:request-connection protocol="HTTPS" host="api.artic.edu" />
+	<http:request-config name="Obras_Arte_Request" doc:name="HTTP Request configuration" doc:id="26fdb4c0-4c74-4af1-8768-f7572789da20" basePath="${galerias_arte.base_path}" >
+		<http:request-connection protocol="HTTPS" host="${galerias_arte.host}" />
 	</http:request-config>
 	<configuration-properties doc:name="Configuration properties" doc:id="832f34c7-2313-4b31-8e87-894aa38bd902" file="properties_${mule.env}.yaml" />
 	<global-property doc:name="Global Property" doc:id="f42f2328-1918-4cb3-bb00-cfd1192d7a98" name="mule.env" value="dev" />

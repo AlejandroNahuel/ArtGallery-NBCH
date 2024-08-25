@@ -1,6 +1,6 @@
 %dw 2.0
 
-type auto_b3e263b1_a45b_4c3e_9ec5_4cd7af41d6cd_Output_Attributes = {|
+type auto_092565ec_85f8_4242_b002_eaa7d522e20b_Output_Attributes = {|
   clientCertificate?: {|
     publicKey?: {|  |}, 
     "type"?: String, 

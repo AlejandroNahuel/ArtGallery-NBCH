@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="Get_Obra_By_IdGaleria_and_IdObraFlow" doc:id="e2009efa-f277-4bfc-9e4c-56f11980fd63" >
+		<set-variable value="#[attributes.uriParams.idObra as Number]" doc:name="Id Obra" doc:id="eb015f9b-4b71-4421-95b3-33e007f1d16f" variableName="idObra"/>
+		<http:request method="GET" doc:name="Get galeria by Id" doc:id="fbf24d17-3358-4f64-9e86-19821f9510f9" config-ref="Obras_Arte_Request" path='#[p("galerias_arte.path.galerias") ++ "/" ++ attributes.uriParams.idGaleria]'/>
+		<set-variable value="#[payload.data.id]" doc:name="Id galeria" doc:id="e13bd43c-def5-4251-ba73-e5d0b0a7e834" variableName="id_galeria"/>
+		<flow-ref doc:name="Obras por id Galeria" doc:id="3070fb07-6231-4457-b5c5-6aeb54d42802" name="Obras_By_Id_Galeria_flow"/>
+		<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;((payload.data filter ((item)-&gt; item.id == vars.idObra)) map((item) -&gt;{&#10;	"idObraArte": item.id,&#10;	"nombreObraArte": item.title&#10;}))[0]]' doc:name="Obra de arte" doc:id="fcc15cc4-56fb-4857-a6c0-6df0ca2aa1d6" variableName="obraArte"/>
+		<choice doc:name="Choice" doc:id="44aec0ff-0e70-4826-9294-55f1272a0c2a" >
+			<when expression="#[vars.obraArte != null]">
+				<ee:transform doc:name="Transform Message" doc:id="4f0f40c9-b7e3-44fc-852c-aa809cf24d43">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+vars.obraArte]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+			</when>
+			<otherwise>
+				<set-variable value="404" doc:name="Set Variable" doc:id="fb05697c-0354-496f-b0f8-d7181f3fe2d8" variableName="httpStatus"/>
+				<ee:transform doc:name="Transform Message" doc:id="7396cabd-2b90-4ac5-ad76-be0f22cf012d" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"errorCode": vars.httpStatus as Number,
+	"errorDescription": "The item you requested cannot be found.",
+	"timestamp": now() as String {format: "dd-MMM-uuuu, HH:mm:ss a"}
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+	</flow>
+</mule>

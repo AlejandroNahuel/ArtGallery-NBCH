@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_092565ec_85f8_4242_b002_eaa7d522e20b_Input_Variables_galerias = Any
+

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="Get_Obras_By_Id_Galeria_flow" doc:id="aa0c7503-db29-4705-813c-d22103f8d6dc" >
+		<http:request method="GET" doc:name="Get Galerias by Id" doc:id="9dd67773-b08a-4cdc-8161-716f46d058cb" config-ref="Obras_Arte_Request" path='#[p("galerias_arte.path.galerias") ++ "/" ++ attributes.uriParams.idGaleria]' sendBodyMode="NEVER" />
+		<set-variable value="#[payload.data.id]" doc:name="Id galeria" doc:id="ecce91b8-8ed8-4cad-a89b-17315ae30f88" variableName="id_galeria"/>
+		<flow-ref doc:name="Obras por Id galeria" doc:id="c37ee6a1-ffb2-43f3-861f-eb6ae9b4b89e" name="Obras_By_Id_Galeria_flow"/>
+		<ee:transform doc:name="Transform Message" doc:id="cdb9fb32-2918-43b6-bb96-f682557da325" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload.data map((item)->{
+	"idObraArte": item.id,
+	"nombreObraArte": item.title
+})]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

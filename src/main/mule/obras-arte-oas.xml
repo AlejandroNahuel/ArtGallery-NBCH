@@ -124,27 +124,26 @@ output application/json
         </error-handler>
     </flow>
     <flow name="get:\galerias:obras-arte-oas-config">
-        <logger level="INFO" message="get:\galerias:obras-arte-oas-config" />
-		<flow-ref doc:name="Get Galerias Flows" doc:id="d4edd331-6fcb-4cde-b4e5-42bc8ccccfee" name="Get_GaleriasFlow"/>
+		<flow-ref doc:name="Get Galerias Flows" doc:id="d4edd331-6fcb-4cde-b4e5-42bc8ccccfee" name="Get_Galerias_flow"/>
     </flow>
     <flow name="get:\galerias\(idGaleria)\obras:obras-arte-oas-config">
-        <ee:transform doc:name="Transform Message">
-            <ee:variables>
-                <ee:set-variable variableName="idGaleria">attributes.uriParams.'idGaleria'</ee:set-variable>
-            </ee:variables>
-        </ee:transform>
-        <logger level="INFO" message="get:\galerias\(idGaleria)\obras:obras-arte-oas-config" />
+		<flow-ref doc:name="Flow Reference" doc:id="e05b4f2e-a40d-4695-a6be-73cd5bc9b1ef" name="Get_Obras_By_Id_Galeria_flow"/>
     </flow>
     <flow name="get:\galerias\(idGaleria):obras-arte-oas-config">
-		<flow-ref doc:name="Galerias by Id Flow" doc:id="e98c7cb8-6e90-4346-abe2-c270811c8352" name="Get_Galerias_By_IdFlow"/>
+		<flow-ref doc:name="Galerias by Id Flow" doc:id="e98c7cb8-6e90-4346-abe2-c270811c8352" name="Get_Galerias_By_Id_flow"/>
     </flow>
     <flow name="get:\galerias\(idGaleria)\obras\(idObra):obras-arte-oas-config">
-        <ee:transform doc:name="Transform Message">
-            <ee:variables>
-                <ee:set-variable variableName="idGaleria">attributes.uriParams.'idGaleria'</ee:set-variable>
-                <ee:set-variable variableName="idObra">attributes.uriParams.'idObra'</ee:set-variable>
-            </ee:variables>
-        </ee:transform>
-        <logger level="INFO" message="get:\galerias\(idGaleria)\obras\(idObra):obras-arte-oas-config" />
+		<flow-ref doc:name="Obras por id_galeria id_obra" doc:id="0d232ba0-2ace-47c3-bbea-711c86d947cf" name="Get_Obra_By_IdGaleria_and_IdObraFlow"/>
     </flow>
+	<flow name="Obras_By_Id_Galeria_flow" doc:id="b8410e32-ac14-47bd-871a-8b7798944a84" >
+		<http:request method="POST" doc:name="Get obras por id galeria" doc:id="92adeb38-f06a-4e9b-a205-8c007556d22d" config-ref="Obras_Arte_Request" path="${galerias_arte.path.obras}" sendBodyMode="ALWAYS" >
+			<http:body ><![CDATA[#[{
+	"query":{
+		"match":{
+			"gallery_id": vars.id_galeria
+		}
+	}
+}]]]></http:body>
+		</http:request>
+	</flow>
 </mule>

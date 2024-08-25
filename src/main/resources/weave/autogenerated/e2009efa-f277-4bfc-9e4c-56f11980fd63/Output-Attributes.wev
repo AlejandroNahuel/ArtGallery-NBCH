@@ -1,6 +1,6 @@
 %dw 2.0
 
-type auto_b3e263b1_a45b_4c3e_9ec5_4cd7af41d6cd_Input_Attributes = {|
+type auto_e2009efa_f277_4bfc_9e4c_56f11980fd63_Output_Attributes = {|
   clientCertificate?: {|
     publicKey?: {|  |}, 
     "type"?: String, 
@@ -16,7 +16,10 @@ type auto_b3e263b1_a45b_4c3e_9ec5_4cd7af41d6cd_Input_Attributes = {|
   requestPath: String, 
   requestUri: String, 
   scheme: String, 
-  uriParams: {|  |}, 
+  uriParams: {|
+    idGaleria: Number, 
+    idObra: Number
+  |}, 
   version: String, 
   localAddress: String
 |}

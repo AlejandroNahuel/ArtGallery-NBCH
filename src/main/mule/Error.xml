@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<configuration doc:name="Configuration" doc:id="7bce68e2-35ca-44c2-ad7d-5665f43f43ea" defaultErrorHandler-ref="Global_Error_Handler" />
+	<error-handler name="Global_Error_Handler" doc:id="93c39554-f2f0-4416-91c2-23fbec863858" >
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="badfca11-b970-45fe-ac59-3e4dd49c76f0" type="HTTP:NOT_FOUND">
+			<set-variable value="404" doc:name="HTTP Status" doc:id="9ad0021b-b34c-4bc7-80a6-343d8c5f85ab" variableName="httpStatus"/>
+			<ee:transform doc:name="Transform Message" doc:id="c0f47a72-69c6-47d1-87da-659151906018" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"errorCode": error.muleMessage.typedValue.status,
+	"errorDescription": error.muleMessage.typedValue.detail,
+	"timestamp": now() as String {format: "dd-MM-uuuu, HH:mm:ss a"}
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-continue>
+	</error-handler>
+</mule>

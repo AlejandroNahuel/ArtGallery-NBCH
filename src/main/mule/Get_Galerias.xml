@@ -5,24 +5,12 @@
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-	<flow name="Get_GaleriasFlow" doc:id="64550913-62e0-46e8-8d4f-d1492ddbced2" >
-		<http:request method="GET" doc:name="Get_Galerias" doc:id="0c90cb2c-e701-4f63-822e-745a5194329e" config-ref="Obras_Arte_Request" path="${path.galerias}"/>
+	<flow name="Get_Galerias_flow" doc:id="64550913-62e0-46e8-8d4f-d1492ddbced2" >
+		<http:request method="GET" doc:name="Get_Galerias" doc:id="0c90cb2c-e701-4f63-822e-745a5194329e" config-ref="Obras_Arte_Request" path="${galerias_arte.path.galerias}" sendBodyMode="NEVER"/>
 		<set-variable value='#[%dw 2.0&#10;output application/json&#10;&#10;fun formatDate(item) = (item as DateTime) as String {format: "dd-MMMM-uuuu, HH:mm:ss a"}&#10;---&#10;//Filtramos el array de data y nos quedamos con el id, title y timestamp&#10;payload.data map((item) -&gt; {&#10;	"idGaleria": item.id,&#10;	"nombreGaleria": item.title,&#10;	"fechaAlta": formatDate(item.timestamp)&#10;})]' doc:name="Galerias" doc:id="81b3c908-a02b-4f6c-a4ee-83db00cd3d67" variableName="galerias"/>
-<ee:transform doc:name="Transform Message" doc:id="e88c90ba-e4ea-4e5f-8ed0-f69f43ce0e2c" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
----
-vars.galerias]]></ee:set-payload>
-			</ee:message>
-			<ee:variables >
-				<ee:set-variable variableName="Response_Payload" ><![CDATA[%dw 2.0
-output application/json
----
-[]]]></ee:set-variable>
-			</ee:variables>
-		</ee:transform>
-		<flow-ref doc:name="Flow Reference" doc:id="5279bc1d-356f-4e8a-b67b-b64418ae5acd" name="Get_GaleriasFlow1"/>
+<set-payload value="#[vars.galerias]" doc:name="Set Payload" doc:id="c6984672-ecf1-41f0-92af-6d4d77918ed0" />
+		<set-variable value="#[%dw 2.0&#10;output application/json&#10;---&#10;[]]" doc:name="Response Payload" doc:id="ae84abac-b50c-4336-978f-0f6d25c9f61b" variableName="Response_Payload"/>
+		<flow-ref doc:name="Flow Reference" doc:id="5279bc1d-356f-4e8a-b67b-b64418ae5acd" name="Get_Obras_por_Galeria_flow"/>
 		<ee:transform doc:name="Transform Message" doc:id="bc1d66ca-e3da-4138-967b-4074b9f54049" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
@@ -32,18 +20,13 @@ vars.Response_Payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 	</flow>
-	<flow name="Get_GaleriasFlow1" doc:id="b3e263b1-a45b-4c3e-9ec5-4cd7af41d6cd" >
-		<foreach doc:name="For Each" doc:id="6391413f-04d8-4aca-b8ee-c784da1d0824" >
-			<set-variable value="#[payload]" doc:name="Galeria" doc:id="96f2e64c-9626-4c74-b69e-1f21e5e69911" variableName="galeria" />
-			<http:request method="GET" doc:name="Request" doc:id="fcd82160-a155-4b8b-9427-29e28d195233" config-ref="Obras_Arte_Request" path="${path.obras}" sendBodyMode="NEVER">
-				<http:query-params ><![CDATA[#[output application/java
----
-{
-	"query" : 'gallerie_id%30D' ++ payload.idGaleria as String
-}]]]></http:query-params>
-			</http:request>
-			<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;//Filtramos el array data&#10;payload.data&#10;map((item) -&gt; {&#10;	"idObraArte": item.id,&#10;	"nombreObraArte": item.title&#10;})]' doc:name="Filtrar data" doc:id="9fd6185d-efa9-4eb0-aa25-5709dc9eb055" variableName="data" />
-			<set-variable value='#[vars.Response_Payload + (vars.galeria ++ {"obrasArte": vars.data})]' doc:name="Response Payload" doc:id="761fd8d2-dde3-4221-91f4-636c8a475708" variableName="Response_Payload" />
+	<flow name="Get_Obras_por_Galeria_flow" doc:id="092565ec-85f8-4242-b002-eaa7d522e20b" >
+		<foreach doc:name="For Each" doc:id="7f28593c-8e66-4bb5-84f2-ae5c204541fe" >
+			<set-variable value="#[payload]" doc:name="Galeria" doc:id="1040b809-de02-4be7-bb7f-f732225dcb56" variableName="galeria" />
+			<set-variable value="#[vars.galeria.idGaleria]" doc:name="Galeria Id" doc:id="e763d869-03b4-48c5-b021-965133a13ca5" variableName="id_galeria"/>
+			<flow-ref doc:name="Obras por id galeria" doc:id="341381ac-b7ca-41c9-8eab-c8de74c4036b" name="Obras_By_Id_Galeria_flow"/>
+			<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;//Filtramos el array data&#10;payload.data&#10;map((item) -&gt; {&#10;	"idObraArte": item.id,&#10;	"nombreObraArte": item.title&#10;})]' doc:name="Filtrar data" doc:id="12708503-fc4e-4712-bb4b-1a34f0d8b954" variableName="data" />
+			<set-variable value='#[vars.Response_Payload + (vars.galeria ++ {"obrasArte": vars.data})]' doc:name="Response Payload" doc:id="ef544b7b-14b5-44c9-97f0-01b64fce62fb" variableName="Response_Payload" />
 		</foreach>
 	</flow>
 </mule>
