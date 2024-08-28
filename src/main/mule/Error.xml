@@ -12,11 +12,30 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 				<ee:message >
 					<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
+
+import modules::Utility
 ---
 {
 	"errorCode": error.muleMessage.typedValue.status,
 	"errorDescription": error.muleMessage.typedValue.detail,
-	"timestamp": now() as String {format: "dd-MM-uuuu, HH:mm:ss a"}
+	"timestamp": Utility::formatDate(now() as String)
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-continue>
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="535f118a-8dff-4da5-9d4d-896457e4aa8e" type="HTTP:BAD_REQUEST">
+			<set-variable value="400" doc:name="Set Variable" doc:id="0c990384-c4a2-40de-ae59-00dd2f67f095" variableName="httpStatus"/>
+			<ee:transform doc:name="Transform Message" doc:id="e1484679-55d6-49fa-a6a0-1f9524f40f64" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+
+import modules::Utility
+---
+{
+	"errorCode": error.muleMessage.typedValue.status,
+	"errorDescription": error.muleMessage.typedValue.error.reason,
+	"timestamp": Utility::formatDate(now() as String)
 }]]></ee:set-payload>
 				</ee:message>
 			</ee:transform>
