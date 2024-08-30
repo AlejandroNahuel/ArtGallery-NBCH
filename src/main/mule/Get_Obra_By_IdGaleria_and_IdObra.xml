@@ -28,11 +28,13 @@ vars.obraArte]]></ee:set-payload>
 					<ee:message >
 						<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
+
+import modules::Utility
 ---
 {
 	"errorCode": vars.httpStatus as Number,
 	"errorDescription": "The item you requested cannot be found.",
-	"timestamp": now() as String {format: "dd-MMM-uuuu, HH:mm:ss a"}
+	"timestamp": Utility::formatDate(now() as String)
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>

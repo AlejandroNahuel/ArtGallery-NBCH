@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="obras-arte-oas-suite.xml" />
+	<munit:test name="Obras_By_Id_Galeria_flow-test" doc:id="c013a8ed-c38b-4ba9-a8b7-1fb049b3d889" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock Get obras por id galeria" doc:id="b9d5d595-9325-49db-9c99-b873f226138d" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="92adeb38-f06a-4e9b-a205-8c007556d22d" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json  --- readUrl('classpath://ObrasByIdGaleriaflowtest\mock_payload.dwl')]" mediaType="application/json " encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://ObrasByIdGaleriaflowtest\mock_attributes.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="id_galeria" value="#[output application/json --- readUrl('classpath://ObrasByIdGaleriaflowtest\mock_variable_.dwl')]" mediaType="application/json" encoding="UTF-8" />
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://ObrasByIdGaleriaflowtest\mock_variable_1.dwl')]" />
+						<munit-tools:variable key="galeria" value="#[output application/json --- readUrl('classpath://ObrasByIdGaleriaflowtest\mock_variable_2.dwl')]" mediaType="application/json" encoding="UTF-8" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="4fd6f905-4a45-4e92-9be8-c60e13236440" >
+				<munit:payload value="#[output application/json  --- readUrl('classpath://ObrasByIdGaleriaflowtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json " />
+				<munit:attributes value="#[readUrl('classpath://ObrasByIdGaleriaflowtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="id_galeria" value="#[output application/json --- readUrl('classpath://ObrasByIdGaleriaflowtest\set-event_variable_.dwl')]" encoding="UTF-8" mediaType="application/json" />
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://ObrasByIdGaleriaflowtest\set-event_variable_1.dwl')]" />
+					<munit:variable key="galeria" value="#[output application/json --- readUrl('classpath://ObrasByIdGaleriaflowtest\set-event_variable_2.dwl')]" encoding="UTF-8" mediaType="application/json" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to Obras_By_Id_Galeria_flow" doc:id="1f89c89d-213c-482a-a7f0-0847acf66daa" name="Obras_By_Id_Galeria_flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="d37d59b9-1610-4a43-abe2-b2e0a5eaf5f1" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import ObrasByIdGaleriaflowtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

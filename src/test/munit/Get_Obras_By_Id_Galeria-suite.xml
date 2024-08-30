@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="Get_Obras_By_Id_Galeria-suite.xml" />
+	<munit:test name="Get_Obras_By_Id_Galeria_flow-test" doc:id="b33e92d2-e1ae-4ad5-a35d-1f2c5ba0009d" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock Obras por Id galeria" doc:id="32016370-2fd8-47d0-a4bc-c9f0c12408a0" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="c37ee6a1-ffb2-43f3-861f-eb6ae9b4b89e" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json  --- readUrl('classpath://GetObrasByIdGaleriaflowtest\mock_payload.dwl')]" mediaType="application/json " encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://GetObrasByIdGaleriaflowtest\mock_attributes.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="id_galeria" value="#[output application/json --- readUrl('classpath://GetObrasByIdGaleriaflowtest\mock_variable_.dwl')]" mediaType="application/json" encoding="UTF-8" />
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://GetObrasByIdGaleriaflowtest\mock_variable_1.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock Get Galerias by Id" doc:id="3dc4f345-a596-4f62-84e9-8dbbc6ec8783" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="9dd67773-b08a-4cdc-8161-716f46d058cb" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json  --- readUrl('classpath://GetObrasByIdGaleriaflowtest\mock_payload1.dwl')]" mediaType="application/json " encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://GetObrasByIdGaleriaflowtest\mock_attributes1.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://GetObrasByIdGaleriaflowtest\mock_variable_2.dwl')]" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:spy doc:name="Spy Transform Message" doc:id="7fdceff5-8c63-4b90-938c-b3ab89c89054" processor="ee:transform">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="cdb9fb32-2918-43b6-bb96-f682557da325" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:before-call >
+					<munit-tools:assert doc:name="Assert payload" doc:id="626be8ec-86d7-4555-881c-8a69a7deff12" message="The payload does not match">
+						<munit-tools:that ><![CDATA[#[%dw 2.0
+import GetObrasByIdGaleriaflowtest::spy_assert_payload
+---
+spy_assert_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+					</munit-tools:assert>
+				</munit-tools:before-call>
+				<munit-tools:after-call >
+					<munit-tools:assert doc:name="Assert payload" doc:id="6e1a1b2b-d9f1-4540-abab-d95026374d12" message="The payload does not match">
+						<munit-tools:that ><![CDATA[#[%dw 2.0
+import GetObrasByIdGaleriaflowtest::spy_assert_payload1
+---
+spy_assert_payload1::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+					</munit-tools:assert>
+				</munit-tools:after-call>
+			</munit-tools:spy>
+			<munit:set-event doc:name="Set Input" doc:id="85d07c62-654a-4390-803b-fa1542a61520" >
+				<munit:payload value="#[readUrl('classpath://GetObrasByIdGaleriaflowtest\set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://GetObrasByIdGaleriaflowtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://GetObrasByIdGaleriaflowtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to Get_Obras_By_Id_Galeria_flow" doc:id="e6868458-b16d-404f-805e-66a106c047a5" name="Get_Obras_By_Id_Galeria_flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="b242250c-878c-4207-a7c3-d3eaf91720f8" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import GetObrasByIdGaleriaflowtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+			<munit-tools:verify-call doc:name="Verify Id galeria" doc:id="c4fd92b5-04c9-49b3-8e6a-a9a53e0e7dec" processor="set-variable" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="ecce91b8-8ed8-4cad-a89b-17315ae30f88" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify Transform Message" doc:id="863f103a-2c34-4f4f-a48d-d791adb3bffb" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="cdb9fb32-2918-43b6-bb96-f682557da325" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>
